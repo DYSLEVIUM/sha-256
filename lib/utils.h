@@ -2,6 +2,7 @@
 
 #include <array>
 #include <bitset>
+#include <ranges>
 #include <string>
 
 template <typename T>
@@ -33,10 +34,13 @@ consteval std::array<T, N> get_primes() {
     };
 
     std::array<T, N> primes;
-    for (size_t num = 2, prime_count = 0; prime_count < N; ++num) {
-        if (is_prime(num)) {
-            primes[prime_count++] = num;
+    size_t prime_count = 0;
+    // for (size_t num = 2; prime_count < N; ++num) {
+    for (size_t num : std::views::iota(2) | std::views::filter(is_prime)) {
+        if (prime_count == N) {
+            break;
         }
+        primes[prime_count++] = num;
     }
 
     return primes;

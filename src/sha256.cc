@@ -5,6 +5,7 @@
 #include <bitset>
 #include <fstream>
 #include <iostream>
+#include <ranges>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -25,6 +26,7 @@ std::array<uint32_t, 8> SHA256::compress(
 
         // shift the state registers
         for (size_t j = 7; j > 0; --j) {
+            // for (size_t j : std::views::iota(7, 0)) {
             new_hashes[j] = new_hashes[j - 1];
         }
 
@@ -55,7 +57,7 @@ std::string SHA256::hash(
             }
         }
 
-        for (size_t i = 16; i < 64; ++i) {
+        for (size_t i : std::views::iota(16, 64)) {
             message_schedule[i] = SHA256::l_sigma1(message_schedule[i - 2]) +
                                   message_schedule[i - 7] +
                                   SHA256::l_sigma0(message_schedule[i - 15]) +
@@ -75,7 +77,7 @@ std::string SHA256::hash(
 
 void SHA256::add_size_to_final_block(std::array<uint8_t, 64>& final_block,
                                      const uint64_t& bit_len) {
-    for (size_t i = 0; i < 8; ++i) {
+    for (size_t i : std::views::iota(0, 8)) {
         final_block[63 - i] = bit_len >> (i * 8);
     }
 }
