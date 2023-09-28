@@ -6,14 +6,10 @@
 
 #pragma GCC optimize("Ofast,fast-math,unroll-loops")
 
-#include <bitset>
-#include <cstdint>
 #include <fstream>
 #include <iostream>
 
 #include "SHA256/sha256.h"
-
-typedef std::bitset<32> bits32;
 
 int main() {
     std::cout << SHA256::hash("abc") << '\n';
