@@ -114,24 +114,13 @@ std::string SHA256::hash(const std::string& message) {
 
                 final_block[te++] = (1 << 7);  // append 1 to mark the end; 0x80
 
-                // initial values is 0, the bottom loop is redundant
-                // while (te < 56) {
-                //     final_block[te++] = 0;  // pad with 0
-                // }
-
                 SHA256::add_size_to_final_block(final_block, bit_len);
                 message_blocks.push_back(final_block);
             }
         } else {  // partially filled block
             size_t te = block_len;
-            // size_t end = block_len < 56 ? 56 : 64;
 
             block[te++] = (1 << 7);  // append 1 to mark the end; 0x80
-
-            // initial values is 0, the bottom loop is redundant
-            // while (te < end) {
-            //     block[te++] = 0;  // pad with 0
-            // }
 
             std::array<uint8_t, 64> final_block{};
 
