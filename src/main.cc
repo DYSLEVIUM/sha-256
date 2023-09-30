@@ -13,6 +13,10 @@
 
 int main() {
     std::cout << SHA256::hash("abc") << '\n';
-    std::cout << SHA256::hash(std::ifstream("./test.txt")) << '\n';
+
+    std::ifstream fin("./test.txt");
+    std::cout << SHA256::hash(fin) << '\n';
+    fin.close();
+
     return 0;
 }

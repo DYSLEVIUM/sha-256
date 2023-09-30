@@ -3,7 +3,10 @@
 
 #include <array>
 #include <bitset>
+/* #include <format> */
 #include <fstream>
+#include <iomanip>
+#include <ios>
 #include <iostream>
 #include <ranges>
 #include <sstream>
@@ -26,7 +29,6 @@ std::array<uint32_t, 8> SHA256::compress(
 
         // shift the state registers
         for (size_t j = 7; j > 0; --j) {
-            // for (size_t j : std::views::iota(7, 0)) {
             new_hashes[j] = new_hashes[j - 1];
         }
 
@@ -69,7 +71,9 @@ std::string SHA256::hash(
 
     std::ostringstream os;
     for (const auto& hash : hashes) {
-        os << std::hex << hash;
+        /* std::cout << std::format("{:#08x}\n", hash) << '\n'; */
+        os << std::setw(8) << std::setfill('0') << std::right << std::hex
+           << hash;
     }
 
     return os.str();
@@ -82,7 +86,8 @@ void SHA256::add_size_to_final_block(std::array<uint8_t, 64>& final_block,
     }
 }
 
-std::string SHA256::hash(const std::string& message) {
+std::vector<std::array<uint8_t, 64>> SHA256::get_message_blocks(
+    const std::string& message) {
     size_t num_blocks = message.size() / 512 + 1;
 
     std::vector<std::array<uint8_t, 64>>
@@ -112,9 +117,7 @@ std::string SHA256::hash(const std::string& message) {
             if (k == message.size()) {
                 std::array<uint8_t, 64> final_block{};
 
-                size_t te = 0;
-
-                final_block[te++] = (1 << 7);  // append 1 to mark the end; 0x80
+                final_block[0] = (1 << 7);  // append 1 to mark the end; 0x80
 
                 SHA256::add_size_to_final_block(final_block, bit_len);
                 message_blocks.push_back(final_block);
@@ -141,6 +144,11 @@ std::string SHA256::hash(const std::string& message) {
         i = k - 1;
     }
 
+    return message_blocks;
+}
+
+std::string SHA256::hash(const std::string& message) {
+    auto message_blocks = SHA256::get_message_blocks(message);
     return SHA256::hash(message_blocks);
 }
 
