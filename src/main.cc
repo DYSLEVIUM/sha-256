@@ -6,17 +6,43 @@
 
 #pragma GCC optimize("Ofast,fast-math,unroll-loops")
 
+#include <cstring>
 #include <fstream>
 #include <iostream>
 
 #include "SHA256/sha256.h"
 
-int main() {
-    std::cout << SHA256::hash("abc") << '\n';
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Number of arguments is invalid!";
+        return -1;
+    }
 
-    std::ifstream fin("./test.txt");
-    std::cout << SHA256::hash(fin) << '\n';
-    fin.close();
+    size_t file_number = 0;
+    for (size_t i = 1; (int16_t)i < argc; ++i) {
+        std::string hash;
+        if (!strcmp(argv[i], "-f")) {
+            if ((int16_t)i + 1 == argc) {
+                std::cerr << "No file was provided";
+                return -1;
+            }
+
+            std::cout << "Starting Hash for file: " << argv[++i] << '\n';
+
+            std::ifstream fin(argv[i]);
+            hash = SHA256::hash(fin);
+            fin.close();
+
+        } else {
+            std::cout << "Starting Hash for string: " << argv[i] << '\n';
+
+            hash = SHA256::hash(argv[i]);
+        }
+
+        std::cout << "Hash for " << file_number << " is: " << hash << '\n';
+        std::cout << '\n';
+        ++file_number;
+    }
 
     return 0;
 }

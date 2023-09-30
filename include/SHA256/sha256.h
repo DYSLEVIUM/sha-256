@@ -128,6 +128,9 @@ class SHA256 {
     static void add_size_to_final_block(std::array<uint8_t, 64>&,
                                         const uint64_t&);
 
+    static std::array<uint32_t, 64> get_message_schedule(
+        const std::array<uint8_t, 64>&);
+
     static std::vector<std::array<uint8_t, 64>> get_message_blocks(
         const std::string&);
 
